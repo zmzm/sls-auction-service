@@ -1,5 +1,4 @@
-service:
-  name: auction-service
+service: auction-service
 
 plugins:
   - serverless-bundle

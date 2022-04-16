@@ -7,3 +7,15 @@
 ```text
 https://github.com/zmzm/sls-node-base
 ```
+
+## Application deploy
+
+```text
+sls deploy --stage dev --anothe_var some_value --verbose
+```
+
+## Application remove
+
+```text
+sls remove --verbose
+```
