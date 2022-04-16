@@ -1,0 +1,21 @@
+service:
+  name: auction-service
+
+plugins:
+  - serverless-bundle
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  memorySize: 256
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  
+functions:
+  hello:
+    handler: src/handlers/hello.handler
+    events:
+      - http:
+          method: GET
+          path: /hello
