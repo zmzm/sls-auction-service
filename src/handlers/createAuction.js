@@ -1,6 +1,6 @@
-import { AUCTION_STATUS } from "../constants";
+import { AUCTION_STATUS } from '../constants';
 
-async function createAuction(event, context) {
+async function createAuction(event) {
   const { name } = JSON.parse(event.body);
   const now = new Date();
 
@@ -17,5 +17,3 @@ async function createAuction(event, context) {
 }
 
 export const handler = createAuction;
-
-
