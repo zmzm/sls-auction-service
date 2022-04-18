@@ -12,9 +12,9 @@ provider:
   region: ${opt:region, 'us-east-1'}
   
 functions:
-  hello:
-    handler: src/handlers/hello.handler
+  createAuction:
+    handler: src/handlers/createAuction.handler
     events:
       - http:
-          method: GET
-          path: /hello
+          method: POST
+          path: /auction

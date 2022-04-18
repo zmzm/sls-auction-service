@@ -19,3 +19,9 @@ sls deploy --stage dev --anothe_var some_value --verbose
 ```text
 sls remove --verbose
 ```
+
+### Function redeploy
+
+```text
+sls deploy function -f functionName
+```
