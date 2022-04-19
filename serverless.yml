@@ -10,6 +10,20 @@ provider:
   memorySize: 256
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
+
+resources:
+  Resources:
+    AuctionTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Auction
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
   
 functions:
   createAuction:
