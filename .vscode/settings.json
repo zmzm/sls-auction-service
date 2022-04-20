@@ -1,5 +1,9 @@
 {
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/reference.json": "file:///Users/uladzislaukavalski/Documents/Projects/sls-auction-service/serverless.yml"
+    "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/reference.json": [
+      "file:///Users/uladzislaukavalski/Documents/Projects/sls-auction-service/serverless.yml",
+      "file:///Users/uladzislaukavalski/Documents/Projects/sls-auction-service/resources/auctionTable.yml",
+      "file:///Users/uladzislaukavalski/Documents/Projects/sls-auction-service/iam/auctionTableIAM.yml"
+    ]
   }
 }

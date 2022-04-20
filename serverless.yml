@@ -11,11 +11,11 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
   iamRoleStatements:
-    - ${file(./iam/auctionTableIAM.yaml):AuctionTableIAM}
+    - ${file(./iam/auctionTableIAM.yml):AuctionTableIAM}
 
 resources:
   Resources:
-    AuctionTable: ${file(./resources/auctionTable.yaml):AuctionTable}
+    AuctionTable: ${file(./resources/auctionTable.yml):AuctionTable}
 functions:
   createAuction:
     handler: src/handlers/createAuction.handler
