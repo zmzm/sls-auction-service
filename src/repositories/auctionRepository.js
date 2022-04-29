@@ -17,15 +17,22 @@ export default class AuctionRepository {
   }
 
   async findById(id) {
+    let auction = null;
     try {
       const { Item } = await this.db
         .get({ TableName: this.table, Key: { id } })
         .promise();
 
-      return Item;
+      auction = Item;
     } catch (error) {
       throw new createError.InternalServerError(error);
     }
+
+    if (!auction) {
+      throw new createError.NotFound(`Auction with ID ${id} not found.`);
+    }
+
+    return auction;
   }
 
   async create(entity) {

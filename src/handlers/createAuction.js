@@ -1,5 +1,4 @@
 import { v4 as uuid } from 'uuid';
-import createError from 'http-errors';
 
 import { AUCTION_STATUS } from '../constants';
 import baseMiddleware from '../middleware/baseMiddleware';
@@ -23,11 +22,7 @@ async function createAuction(event) {
     },
   };
 
-  try {
-    await auctionRepository.create(auction);
-  } catch (error) {
-    throw new createError.InternalServerError(error);
-  }
+  await auctionRepository.create(auction);
 
   return {
     statusCode: 201,

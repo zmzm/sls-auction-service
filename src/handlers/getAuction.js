@@ -1,5 +1,3 @@
-import createError from 'http-errors';
-
 import baseMiddleware from '../middleware/baseMiddleware';
 import AuctionRepository from '../repositories/auctionRepository';
 
@@ -9,18 +7,8 @@ async function getAuction(event) {
   const {
     pathParameters: { id },
   } = event;
-  let auction = null;
 
-  try {
-    const result = await auctionRepository.findById(id);
-    auction = result;
-  } catch (error) {
-    throw new createError.InternalServerError(error);
-  }
-
-  if (!auction) {
-    throw new createError.NotFound(`Auction with ID ${id} not found.`);
-  }
+  const auction = await auctionRepository.findById(id);
 
   return {
     statusCode: 200,

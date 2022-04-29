@@ -18,14 +18,15 @@ async function placeBid(event) {
     },
     ReturnValues: 'ALL_NEW',
   };
-  let updatedAuction = null;
+  const currentAuction = await auctionRepository.findById(id);
 
-  try {
-    const result = await auctionRepository.update(params);
-    updatedAuction = result;
-  } catch (error) {
-    throw new createError.InternalServerError(error);
+  if (amount <= currentAuction.highestBid.amount) {
+    throw createError.Forbidden(
+      `Your bid must be higher than ${currentAuction.highestBid.amount}!`
+    );
   }
+
+  const updatedAuction = await auctionRepository.update(params);
 
   return {
     statusCode: 200,
