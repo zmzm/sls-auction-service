@@ -1,9 +1,9 @@
-import AWS from 'aws-sdk';
 import createError from 'http-errors';
 
 import baseMiddleware from '../middleware/baseMiddleware';
+import AuctionRepository from '../repositories/auctionRepository';
 
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const auctionRepository = new AuctionRepository();
 
 async function getAuction(event) {
   const {
@@ -12,10 +12,8 @@ async function getAuction(event) {
   let auction = null;
 
   try {
-    const { Item } = await dynamoDB
-      .get({ TableName: process.env.AUCTION_TABLE_NAME, Key: { id } })
-      .promise();
-    auction = Item;
+    const result = await auctionRepository.findById(id);
+    auction = result;
   } catch (error) {
     throw new createError.InternalServerError(error);
   }

@@ -1,11 +1,11 @@
 import { v4 as uuid } from 'uuid';
-import AWS from 'aws-sdk';
 import createError from 'http-errors';
 
 import { AUCTION_STATUS } from '../constants';
 import baseMiddleware from '../middleware/baseMiddleware';
+import AuctionRepository from '../repositories/auctionRepository';
 
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const auctionRepository = new AuctionRepository();
 
 async function createAuction(event) {
   const {
@@ -24,12 +24,7 @@ async function createAuction(event) {
   };
 
   try {
-    await dynamoDB
-      .put({
-        TableName: process.env.AUCTION_TABLE_NAME,
-        Item: auction,
-      })
-      .promise();
+    await auctionRepository.create(auction);
   } catch (error) {
     throw new createError.InternalServerError(error);
   }

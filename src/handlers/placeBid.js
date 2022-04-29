@@ -1,9 +1,9 @@
-import AWS from 'aws-sdk';
 import createError from 'http-errors';
 
 import baseMiddleware from '../middleware/baseMiddleware';
+import AuctionRepository from '../repositories/auctionRepository';
 
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const auctionRepository = new AuctionRepository();
 
 async function placeBid(event) {
   const {
@@ -11,7 +11,6 @@ async function placeBid(event) {
   } = event;
   const { amount } = event.body;
   const params = {
-    TableName: process.env.AUCTION_TABLE_NAME,
     Key: { id },
     UpdateExpression: 'set highestBid.amount = :amount',
     ExpressionAttributeValues: {
@@ -22,8 +21,8 @@ async function placeBid(event) {
   let updatedAuction = null;
 
   try {
-    const { Attributes } = await dynamoDB.update(params).promise();
-    updatedAuction = Attributes;
+    const result = await auctionRepository.update(params);
+    updatedAuction = result;
   } catch (error) {
     throw new createError.InternalServerError(error);
   }
