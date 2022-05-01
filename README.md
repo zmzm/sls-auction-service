@@ -25,3 +25,9 @@ sls remove --verbose
 ```text
 sls deploy function -f functionName
 ```
+
+### Function logs
+
+```text
+sls logs -f functionName
+```
