@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
 import createError from 'http-errors';
+import { AUCTION_STATUS } from '../constants';
 
 export default class AuctionRepository {
   db = new AWS.DynamoDB.DocumentClient();
@@ -54,6 +55,30 @@ export default class AuctionRepository {
         .promise();
 
       return Attributes;
+    } catch (error) {
+      throw new createError.InternalServerError(error);
+    }
+  }
+
+  async getEndedAuctions() {
+    try {
+      const now = new Date();
+      const params = {
+        TableName: this.table,
+        IndexName: 'statusAndEndDate',
+        KeyConditionExpression: '#status = :status AND endingAt <= :now',
+        ExpressionAttributeValues: {
+          ':now': now.toISOString(),
+          ':status': AUCTION_STATUS.open,
+        },
+        ExpressionAttributeNames: {
+          '#status': 'status',
+        },
+      };
+
+      const { Items } = await this.db.query(params).promise();
+
+      return Items;
     } catch (error) {
       throw new createError.InternalServerError(error);
     }
