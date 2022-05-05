@@ -83,4 +83,25 @@ export default class AuctionRepository {
       throw new createError.InternalServerError(error);
     }
   }
+
+  async closeAuction(auctionId) {
+    try {
+      const params = {
+        TableName: this.table,
+        Key: { id: auctionId },
+        UpdateExpression: 'set #status = :status',
+        ExpressionAttributeValues: {
+          ':status': AUCTION_STATUS.closed,
+        },
+        ExpressionAttributeNames: {
+          '#status': 'status',
+        },
+      };
+
+      const result = await this.db.update(params).promise();
+      return result;
+    } catch (error) {
+      throw new createError.InternalServerError(error);
+    }
+  }
 }
