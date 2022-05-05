@@ -7,9 +7,20 @@ export default class AuctionRepository {
 
   table = process.env.AUCTION_TABLE_NAME;
 
-  async findAll() {
+  async findByStatus(status) {
     try {
-      const { Items } = await this.db.scan({ TableName: this.table }).promise();
+      const params = {
+        TableName: this.table,
+        IndexName: 'statusAndEndDate',
+        KeyConditionExpression: '#status = :status',
+        ExpressionAttributeValues: {
+          ':status': status,
+        },
+        ExpressionAttributeNames: {
+          '#status': 'status',
+        },
+      };
+      const { Items } = await this.db.query(params).promise();
 
       return Items;
     } catch (error) {

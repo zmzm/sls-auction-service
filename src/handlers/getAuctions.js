@@ -1,10 +1,16 @@
+import validator from '@middy/validator';
+
 import baseMiddleware from '../middleware/baseMiddleware';
 import AuctionRepository from '../repositories/auctionRepository';
+import getAuctionsSchema from '../schemas/getAuctionsSchema';
 
 const auctionRepository = new AuctionRepository();
 
-async function getAuctions() {
-  const auctions = await auctionRepository.findAll();
+async function getAuctions(event) {
+  const {
+    queryStringParameters: { status },
+  } = event;
+  const auctions = await auctionRepository.findByStatus(status);
 
   return {
     statusCode: 200,
@@ -12,4 +18,12 @@ async function getAuctions() {
   };
 }
 
-export const handler = baseMiddleware(getAuctions);
+export const handler = baseMiddleware(getAuctions).use(
+  validator({
+    inputSchema: getAuctionsSchema,
+    ajvOptions: {
+      useDefaults: true,
+      strict: false,
+    },
+  })
+);

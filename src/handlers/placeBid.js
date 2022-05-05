@@ -1,4 +1,5 @@
 import createError from 'http-errors';
+import { AUCTION_STATUS } from '../constants';
 
 import baseMiddleware from '../middleware/baseMiddleware';
 import AuctionRepository from '../repositories/auctionRepository';
@@ -19,6 +20,10 @@ async function placeBid(event) {
     ReturnValues: 'ALL_NEW',
   };
   const currentAuction = await auctionRepository.findById(id);
+
+  if (currentAuction.status !== AUCTION_STATUS.open) {
+    throw createError.Forbidden('You cannot bid on closed auctions!');
+  }
 
   if (amount <= currentAuction.highestBid.amount) {
     throw createError.Forbidden(
