@@ -1,8 +1,10 @@
+import validator from '@middy/validator';
 import createError from 'http-errors';
-import { AUCTION_STATUS } from '../constants';
 
+import { AUCTION_STATUS } from '../constants';
 import baseMiddleware from '../middleware/baseMiddleware';
 import AuctionRepository from '../repositories/auctionRepository';
+import placeBidSchema from '../schemas/placeBidSchema';
 
 const auctionRepository = new AuctionRepository();
 
@@ -39,4 +41,11 @@ async function placeBid(event) {
   };
 }
 
-export const handler = baseMiddleware(placeBid);
+export const handler = baseMiddleware(placeBid).use(
+  validator({
+    inputSchema: placeBidSchema,
+    ajvOptions: {
+      strict: false,
+    },
+  })
+);

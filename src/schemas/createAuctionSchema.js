@@ -4,12 +4,12 @@ const createAuctionSchema = {
     body: {
       type: 'object',
       properties: {
-        title: {
+        name: {
           type: 'string',
-          description: 'User provided auction title',
+          description: 'User provided auction name',
         },
       },
-      required: ['title'],
+      required: ['name'],
     },
   },
   required: ['body'],
