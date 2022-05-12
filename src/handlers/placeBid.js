@@ -12,12 +12,19 @@ async function placeBid(event) {
   const {
     pathParameters: { id },
   } = event;
-  const { amount } = event.body;
+  const {
+    body: { amount },
+    requestContext: {
+      authorizer: { email },
+    },
+  } = event;
   const params = {
     Key: { id },
-    UpdateExpression: 'set highestBid.amount = :amount',
+    UpdateExpression:
+      'set highestBid.amount = :amount, highestBid.bidder = :bidder',
     ExpressionAttributeValues: {
       ':amount': amount,
+      ':bidder': email,
     },
     ReturnValues: 'ALL_NEW',
   };
@@ -25,6 +32,14 @@ async function placeBid(event) {
 
   if (currentAuction.status !== AUCTION_STATUS.open) {
     throw createError.Forbidden('You cannot bid on closed auctions!');
+  }
+
+  if (currentAuction.seller === email) {
+    throw createError.Forbidden('You cannot bid on your own auction!');
+  }
+
+  if (currentAuction.highestBid.bidder === email) {
+    throw createError.Forbidden('You already placed a highest bid!');
   }
 
   if (amount <= currentAuction.highestBid.amount) {
