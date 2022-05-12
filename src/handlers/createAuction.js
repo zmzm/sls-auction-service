@@ -11,6 +11,9 @@ const auctionRepository = new AuctionRepository();
 async function createAuction(event) {
   const {
     body: { name },
+    requestContext: {
+      authorizer: { email },
+    },
   } = event;
   const now = new Date();
   const endDate = new Date();
@@ -25,6 +28,7 @@ async function createAuction(event) {
     highestBid: {
       amount: 0,
     },
+    seller: email,
   };
 
   await auctionRepository.create(auction);
