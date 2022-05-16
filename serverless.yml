@@ -12,12 +12,15 @@ provider:
   region: ${opt:region, 'us-east-1'}
   environment:
     AUCTION_TABLE_NAME: ${self:custom.AuctionTable.name}
+    MAIL_QUEUE_URL: ${self:custom.MailQueue.url}
   iamRoleStatements:
     - ${file(./iam/auctionTableIAM.yml):AuctionTableIAM}
+    - ${file(./iam/mailQueueIAM.yml):MailQueueIAM}
 
 resources:
   Resources:
     AuctionTable: ${file(./resources/auctionTable.yml):AuctionTable}
+
 functions:
   createAuction:
     handler: src/handlers/createAuction.handler
@@ -56,4 +59,7 @@ custom:
   AuctionTable:
     name: !Ref AuctionTable
     arn: !GetAtt AuctionTable.Arn
+  MailQueue:
+    arn: ${cf:sls-notification-service-${self:provider.stage}.MailQueueArn}
+    url: ${cf:sls-notification-service-${self:provider.stage}.MailQueueUrl}
   authorizer: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:serverless-auth0-authorizer-${self:provider.stage}-auth
