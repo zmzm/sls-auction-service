@@ -13,13 +13,17 @@ provider:
   environment:
     AUCTION_TABLE_NAME: ${self:custom.AuctionTable.name}
     MAIL_QUEUE_URL: ${self:custom.MailQueue.url}
+    AUCTIONS_BUCKET_NAME: ${self:custom.AuctionsBucket.name}
   iamRoleStatements:
     - ${file(./iam/auctionTableIAM.yml):AuctionTableIAM}
     - ${file(./iam/mailQueueIAM.yml):MailQueueIAM}
+    - ${file(./iam/auctionsBucketIAM.yml):AuctionsBucketIAM}
 
 resources:
   Resources:
     AuctionTable: ${file(./resources/auctionTable.yml):AuctionTable}
+    AuctionsBucket: ${file(./resources/auctionsBucket.yml):AuctionsBucket}
+    AuctionsBucketPolicy: ${file(./resources/auctionsBucket.yml):AuctionsBucketPolicy}
 
 functions:
   createAuction:
@@ -50,6 +54,13 @@ functions:
           method: PATCH
           path: /auction/{id}/bid
           authorizer: ${self:custom.authorizer}
+  uploadAuctionPicture:
+    handler: src/handlers/uploadAuctionPicture.handler
+    events:
+      - http:
+          method: PATCH
+          path: /auction/{id}/picture
+          authorizer: ${self:custom.authorizer}
   processAuctions:
     handler: src/handlers/processAuctions.handler
     events:
@@ -62,4 +73,6 @@ custom:
   MailQueue:
     arn: ${cf:sls-notification-service-${self:provider.stage}.MailQueueArn}
     url: ${cf:sls-notification-service-${self:provider.stage}.MailQueueUrl}
+  AuctionsBucket:
+    name: auctions-bucket-jh23g4-${self:provider.stage}
   authorizer: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:serverless-auth0-authorizer-${self:provider.stage}-auth
