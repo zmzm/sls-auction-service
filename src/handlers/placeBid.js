@@ -10,10 +10,8 @@ const auctionRepository = new AuctionRepository();
 
 async function placeBid(event) {
   const {
-    pathParameters: { id },
-  } = event;
-  const {
     body: { amount },
+    pathParameters: { id },
     requestContext: {
       authorizer: { email },
     },

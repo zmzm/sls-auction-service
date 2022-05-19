@@ -109,7 +109,26 @@ export default class AuctionRepository {
         },
       };
 
-      const result = await this.db.update(params).promise();
+      const result = await this.update(params);
+      return result;
+    } catch (error) {
+      throw new createError.InternalServerError(error);
+    }
+  }
+
+  async setAuctionPicture({ pictureUrl, auctionId }) {
+    try {
+      const params = {
+        TableName: this.table,
+        Key: { id: auctionId },
+        UpdateExpression: 'set pictureUrl = :pictureUrl',
+        ExpressionAttributeValues: {
+          ':pictureUrl': pictureUrl,
+        },
+        ReturnValues: 'ALL_NEW',
+      };
+
+      const result = await this.update(params);
       return result;
     } catch (error) {
       throw new createError.InternalServerError(error);
