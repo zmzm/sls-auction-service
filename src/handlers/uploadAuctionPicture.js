@@ -1,6 +1,11 @@
 import createError from 'http-errors';
+import middy from '@middy/core';
+import httpErrorHandler from '@middy/http-error-handler';
+import validator from '@middy/validator';
+
 import AuctionRepository from '../repositories/auctionRepository';
 import { uploadPictureToS3 } from '../util/auploadPictureToS3';
+import uploadAuctionPictureSchema from '../schemas/uploadAuctionPictureSchema';
 
 const auctionRepository = new AuctionRepository();
 
@@ -39,4 +44,6 @@ async function uploadAuctionPicture(event) {
   }
 }
 
-export const handler = uploadAuctionPicture;
+export const handler = middy(uploadAuctionPicture)
+  .use(httpErrorHandler())
+  .use(validator({ inputSchema: uploadAuctionPictureSchema }));

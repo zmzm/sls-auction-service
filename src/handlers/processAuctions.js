@@ -1,3 +1,6 @@
+import middy from '@middy/core';
+import httpErrorHandler from '@middy/http-error-handler';
+
 import AuctionRepository from '../repositories/auctionRepository';
 import { notifyAuctionParticipants } from '../util/notification';
 
@@ -11,4 +14,4 @@ async function processAuctions() {
   });
 }
 
-export const handler = processAuctions;
+export const handler = middy(processAuctions).use(httpErrorHandler());
